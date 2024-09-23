@@ -8,7 +8,7 @@ const OrdersList = () => {
     const fetchOrders = async () => {
       try {
         const response = await axios.get("/api/order"); // Обратите внимание на правильный путь к API
-        if (Array.isArray(response.data)) {св 
+        if (Array.isArray(response.data)) {
           setOrders(response.data);
         } else {
           console.error("Received data is not an array:", response.data);
