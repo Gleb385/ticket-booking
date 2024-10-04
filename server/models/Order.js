@@ -9,9 +9,10 @@ const orderSchema = new Schema({
     }
   ],
   userInfo: {
-    name: String,
-    email: String,
-    phone: String
+    name: { type: String, required: true },
+    email: { type: String, required: true },
+    phone: { type: String, required: true },
+    address: { type: String, required: true }
   },
   createdAt: {
     type: Date,
