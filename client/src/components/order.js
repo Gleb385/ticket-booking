@@ -2,26 +2,30 @@ import React, { useState } from "react";
 import axios from "axios";
 
 function Order() {
-  const [userInfo, setUserInfo] = useState({ name: "", email: "" });
+  const [userInfo, setUserInfo] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    address: ""
+  });
   const [message, setMessage] = useState("");
 
   const handleInputChange = e => {
     const { name, value } = e.target;
     setUserInfo({ ...userInfo, [name]: value });
   };
-  
+
   const handleSubmit = e => {
     e.preventDefault();
     axios
       .post("http://localhost:5001/api/order", {
-        // Убедитесь, что URL правильный
-        name: userInfo.name,
-        email: userInfo.email
+        userInfo, // Передаем объект userInfo целиком
+        tickets: [] // Временно пустой массив билетов
       })
       .then(response => {
         setMessage(response.data.message);
         // Очистка полей после успешного отправления
-        setUserInfo({ name: "", email: "" });
+        setUserInfo({ name: "", email: "", phone: "", address: "" });
       })
       .catch(error => {
         console.error("Error placing order:", error);
@@ -51,6 +55,30 @@ function Order() {
               type="email"
               name="email"
               value={userInfo.email}
+              onChange={handleInputChange}
+              required
+            />
+          </label>
+        </div>
+        <div>
+          <label>
+            Phone:
+            <input
+              type="text"
+              name="phone"
+              value={userInfo.phone}
+              onChange={handleInputChange}
+              required
+            />
+          </label>
+        </div>
+        <div>
+          <label>
+            Address:
+            <input
+              type="text"
+              name="address"
+              value={userInfo.address}
               onChange={handleInputChange}
               required
             />
