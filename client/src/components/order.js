@@ -7,7 +7,7 @@ function Order() {
     email: "",
     phone: "",
     address: ""
-  });
+  }); // Добавляем поля телефона и адреса
   const [message, setMessage] = useState("");
 
   const handleInputChange = e => {
@@ -19,13 +19,14 @@ function Order() {
     e.preventDefault();
     axios
       .post("http://localhost:5001/api/order", {
-        userInfo, // Передаем объект userInfo целиком
-        tickets: [] // Временно пустой массив билетов
+        // Убедитесь, что URL правильный
+        userInfo: userInfo, // Обратите внимание на структуру данных
+        tickets: [] // Если у вас есть массив билетов, передайте его здесь
       })
       .then(response => {
         setMessage(response.data.message);
         // Очистка полей после успешного отправления
-        setUserInfo({ name: "", email: "", phone: "", address: "" });
+        setUserInfo({ name: "", email: "", phone: "", address: "" }); // Сбрасываем все поля
       })
       .catch(error => {
         console.error("Error placing order:", error);

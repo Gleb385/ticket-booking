@@ -30,6 +30,8 @@ const OrdersList = () => {
             Order ID: {order._id} | Name:{" "}
             {order.userInfo ? order.userInfo.name : "No name"} | Email:{" "}
             {order.userInfo ? order.userInfo.email : "No email"}
+            {order.userInfo ? order.userInfo.phone : "No phone"}
+            {order.userInfo ? order.userInfo.address : "No address"}
           </li>
         )}
       </ul>
