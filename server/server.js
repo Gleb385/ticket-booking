@@ -47,7 +47,7 @@ app.get("/api/tickets", async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 });
-console.log(userInfo);
+
 app.post("/api/order", async (req, res) => {
   console.log("Received order:", req.body);
   const { tickets, userInfo } = req.body;
