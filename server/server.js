@@ -9,7 +9,7 @@ const http = require("http"); // Импортируем модуль HTTP
 const { Server } = require("socket.io"); // Импортируем Server из socket.io
 const connectDB = require("./db"); // Импорт функции подключения к базе данных
 const Ticket = require("./models/Ticket");
-const Order = require("./models/Order");
+const Order = require("./models/Order"); // Импорт модели Order
 const MONGODB_URI = process.env.MONGODB_URI;
 const SECRET_KEY = process.env.SECRET_KEY;
 const server = http.createServer(app); // Создаем HTTP сервер
@@ -49,16 +49,30 @@ app.get("/api/tickets", async (req, res) => {
 });
 
 app.post("/api/order", async (req, res) => {
-  console.log("Received order:", req.body);
   const { tickets, userInfo } = req.body;
+
   try {
-    const db = await connectDB();
-    await db.collection("order").insertOne({ tickets, userInfo }); // Используем коллекцию 'orders'
+    // Создаем новый заказ с использованием модели Order
+    const newOrder = new Order({
+      tickets,
+      userInfo: {
+        name: userInfo.name,
+        email: userInfo.email,
+        phone: userInfo.phone,
+        address: userInfo.address
+      }
+    });
+
+    // Сохраняем заказ в базе данных
+    await newOrder.save();
+
+    // Отправляем успешный ответ
     res.json({ success: true, message: "Order placed successfully!" });
 
     // Отправляем событие через socket.io, когда новый заказ создан
     io.emit("newOrder", { tickets, userInfo });
   } catch (err) {
+    console.error("Error placing order:", err);
     res.status(500).json({ error: "Server error" });
   }
 });
@@ -88,10 +102,12 @@ io.on("connection", socket => {
     console.log("User disconnected");
   });
 });
+
 mongoose
   .connect(MONGODB_URI, { tls: true })
   .then(() => console.log("Connected to MongoDB"))
   .catch(err => console.error(err));
+
 // Start the server
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
