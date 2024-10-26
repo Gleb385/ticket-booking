@@ -51,38 +51,14 @@ app.get("/api/tickets", async (req, res) => {
 app.post("/api/order", async (req, res) => {
   console.log("Received order:", req.body);
   const { tickets, userInfo } = req.body;
-
-  // Генерируем уникальные _id для каждого билета
-  const ticketsWithIds = tickets.map(ticket => ({
-    ...ticket,
-    _id: new mongoose.Types.ObjectId() // Генерация уникального идентификатора для каждого билета
-  }));
-
   try {
     const db = await connectDB();
-    console.log("Order to be inserted:", { tickets: ticketsWithIds, userInfo });
+    await db.collection("order").insertOne({ tickets, userInfo }); // Используем коллекцию 'orders'
+    res.json({ success: true, message: "Order placed successfully!" });
 
-    // Вставляем заказ с билетами, включающими уникальные _id
-    const result = await db
-      .collection("order")
-      .insertOne({ tickets: ticketsWithIds, userInfo });
-
-    // Находим созданный заказ для подтверждения
-    const createdOrder = await db
-      .collection("order")
-      .findOne({ _id: result.insertedId });
-
-    // Отправляем заказ с сгенерированными _id билетов обратно клиенту
-    res.json({
-      success: true,
-      message: "Order placed successfully!",
-      order: createdOrder
-    });
-
-    // Отправляем событие через socket.io с добавленным order объектом
-    io.emit("newOrder", createdOrder);
+    // Отправляем событие через socket.io, когда новый заказ создан
+    io.emit("newOrder", { tickets, userInfo });
   } catch (err) {
-    console.error("Order creation error:", err);
     res.status(500).json({ error: "Server error" });
   }
 });

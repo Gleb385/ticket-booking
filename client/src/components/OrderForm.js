@@ -7,8 +7,6 @@ const OrderForm = () => {
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [message, setMessage] = useState("");
-  const [tickets, setTickets] = useState([]); // Initialize tickets state
-  const [order, setOrder] = useState(null); // State to store order information
 
   const handleNameChange = e => {
     console.log("handleNameChange called with:", e.target.value);
@@ -23,22 +21,16 @@ const OrderForm = () => {
   const handleSubmit = event => {
     event.preventDefault();
     console.log("handleSubmit called with name:", name, "email:", email);
-
-    // Use the tickets state for the API request
     axios
-      .post("/api/order", {
-        tickets, // Pass the tickets array
-        userInfo: { name, email, phone, address }
-      })
+      .post("/api/order", { name, email, phone, address })
       .then(response => {
         console.log("Axios response received:", response.data);
         setMessage(response.data.message);
-        setOrder(response.data.order); // Store order information
-        setName("");
-        setEmail("");
+        setName(""); // Очистка имени
+        setEmail(""); // Очистка email
         setAddress("");
         setPhone("");
-        setTickets([]); // Reset tickets state
+        console.log("Name and Email reset");
         setTimeout(() => {
           setMessage("");
         }, 2000);
@@ -102,21 +94,6 @@ const OrderForm = () => {
         <p>
           {message}
         </p>}
-
-      {/* Display order information */}
-      {order &&
-        <div>
-          <h3>
-            Order ID: {order._id}
-          </h3>
-          <ul>
-            {order.tickets.map(ticket =>
-              <li key={ticket._id}>
-                Ticket ID: {ticket._id}
-              </li>
-            )}
-          </ul>
-        </div>}
     </div>
   );
 };
