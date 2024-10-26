@@ -7,7 +7,7 @@ const OrderForm = () => {
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [message, setMessage] = useState("");
-
+  const [tickets, setTickets] = useState([]);
   const handleNameChange = e => {
     console.log("handleNameChange called with:", e.target.value);
     setName(e.target.value);
@@ -34,6 +34,7 @@ const OrderForm = () => {
         setAddress("");
         setPhone("");
         console.log("Form fields reset");
+        setTickets([]); // Сбрасываем список билетов
         setTimeout(() => {
           setMessage("");
         }, 2000);
