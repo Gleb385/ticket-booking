@@ -19,14 +19,18 @@ function Order() {
     e.preventDefault();
     axios
       .post("http://localhost:5001/api/order", {
-        // Убедитесь, что URL правильный
-        userInfo: userInfo, // Обратите внимание на структуру данных
-        tickets: [] // Если у вас есть массив билетов, передайте его здесь
+        userInfo: userInfo, // Объект с информацией о пользователе
+        tickets: tickets // Массив билетов, если есть
       })
       .then(response => {
+        // Сообщение об успешной отправке
         setMessage(response.data.message);
+
         // Очистка полей после успешного отправления
-        setUserInfo({ name: "", email: "", phone: "", address: "" }); // Сбрасываем все поля
+        setUserInfo({ name: "", email: "", phone: "", address: "" });
+        console.log("Order placed successfully:", response.data.order);
+
+        // Если нужно, вы можете обработать response.data.order для отображения данных о заказе
       })
       .catch(error => {
         console.error("Error placing order:", error);
