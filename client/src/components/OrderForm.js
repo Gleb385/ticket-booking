@@ -7,8 +7,8 @@ const OrderForm = () => {
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [message, setMessage] = useState("");
-  const [tickets, setTickets] = useState([]);
-  const [order, setOrder] = useState(null); // Состояние для хранения заказа
+  const [tickets, setTickets] = useState([]); // Initialize tickets state
+  const [order, setOrder] = useState(null); // State to store order information
 
   const handleNameChange = e => {
     console.log("handleNameChange called with:", e.target.value);
@@ -23,20 +23,22 @@ const OrderForm = () => {
   const handleSubmit = event => {
     event.preventDefault();
     console.log("handleSubmit called with name:", name, "email:", email);
+
+    // Use the tickets state for the API request
     axios
       .post("/api/order", {
-        tickets: ["exampleTicketId"], // Используйте нужные данные билетов
+        tickets, // Pass the tickets array
         userInfo: { name, email, phone, address }
       })
       .then(response => {
         console.log("Axios response received:", response.data);
         setMessage(response.data.message);
-        setOrder(response.data.order); // Сохраняем данные о заказе
+        setOrder(response.data.order); // Store order information
         setName("");
         setEmail("");
         setAddress("");
         setPhone("");
-        setTickets([]);
+        setTickets([]); // Reset tickets state
         setTimeout(() => {
           setMessage("");
         }, 2000);
@@ -101,7 +103,7 @@ const OrderForm = () => {
           {message}
         </p>}
 
-      {/* Отображение информации о заказе */}
+      {/* Display order information */}
       {order &&
         <div>
           <h3>
