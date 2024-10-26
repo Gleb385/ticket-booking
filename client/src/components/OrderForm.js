@@ -8,6 +8,8 @@ const OrderForm = () => {
   const [address, setAddress] = useState("");
   const [message, setMessage] = useState("");
   const [tickets, setTickets] = useState([]);
+  const [order, setOrder] = useState(null); // Состояние для хранения заказа
+
   const handleNameChange = e => {
     console.log("handleNameChange called with:", e.target.value);
     setName(e.target.value);
@@ -29,12 +31,12 @@ const OrderForm = () => {
       .then(response => {
         console.log("Axios response received:", response.data);
         setMessage(response.data.message);
+        setOrder(response.data.order); // Сохраняем данные о заказе
         setName("");
         setEmail("");
         setAddress("");
         setPhone("");
-        console.log("Form fields reset");
-        setTickets([]); // Сбрасываем список билетов
+        setTickets([]);
         setTimeout(() => {
           setMessage("");
         }, 2000);
@@ -98,6 +100,21 @@ const OrderForm = () => {
         <p>
           {message}
         </p>}
+
+      {/* Отображение информации о заказе */}
+      {order &&
+        <div>
+          <h3>
+            Order ID: {order._id}
+          </h3>
+          <ul>
+            {order.tickets.map(ticket =>
+              <li key={ticket._id}>
+                Ticket ID: {ticket._id}
+              </li>
+            )}
+          </ul>
+        </div>}
     </div>
   );
 };
