@@ -22,15 +22,18 @@ const OrderForm = () => {
     event.preventDefault();
     console.log("handleSubmit called with name:", name, "email:", email);
     axios
-      .post("/api/order", { name, email, phone, address })
+      .post("/api/order", {
+        tickets: ["exampleTicketId"], // Используйте нужные данные билетов
+        userInfo: { name, email, phone, address }
+      })
       .then(response => {
         console.log("Axios response received:", response.data);
         setMessage(response.data.message);
-        setName(""); // Очистка имени
-        setEmail(""); // Очистка email
+        setName("");
+        setEmail("");
         setAddress("");
         setPhone("");
-        console.log("Name and Email reset");
+        console.log("Form fields reset");
         setTimeout(() => {
           setMessage("");
         }, 2000);
